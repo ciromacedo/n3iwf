@@ -10,8 +10,7 @@ func (ikeMessage *IKEMessage) BuildIKEHeader(
 	responsorSPI uint64,
 	exchangeType uint8,
 	flags uint8,
-	messageID uint32,
-) {
+	messageID uint32) {
 	ikeMessage.InitiatorSPI = initiatorSPI
 	ikeMessage.ResponderSPI = responsorSPI
 	ikeMessage.Version = 0x20
@@ -28,8 +27,7 @@ func (container *IKEPayloadContainer) BuildNotification(
 	protocolID uint8,
 	notifyMessageType uint16,
 	spi []byte,
-	notificationData []byte,
-) {
+	notificationData []byte) {
 	notification := new(Notification)
 	notification.ProtocolID = protocolID
 	notification.NotifyMessageType = notifyMessageType
@@ -94,8 +92,7 @@ func (container *ConfigurationAttributeContainer) Reset() {
 
 func (container *ConfigurationAttributeContainer) BuildConfigurationAttribute(
 	attributeType uint16,
-	attributeValue []byte,
-) {
+	attributeValue []byte) {
 	configurationAttribute := new(IndividualConfigurationAttribute)
 	configurationAttribute.Type = attributeType
 	configurationAttribute.Value = append(configurationAttribute.Value, attributeValue...)
@@ -130,8 +127,7 @@ func (container *IndividualTrafficSelectorContainer) BuildIndividualTrafficSelec
 	startPort uint16,
 	endPort uint16,
 	startAddr []byte,
-	endAddr []byte,
-) {
+	endAddr []byte) {
 	trafficSelector := new(IndividualTrafficSelector)
 	trafficSelector.TSType = tsType
 	trafficSelector.IPProtocolID = ipProtocolID
@@ -161,17 +157,6 @@ func (container *ProposalContainer) BuildProposal(proposalNumber uint8, protocol
 	return proposal
 }
 
-func (container *IKEPayloadContainer) BuildDeletePayload(
-	protocolID uint8, SPISize uint8, numberOfSPI uint16, SPIs []byte,
-) {
-	deletePayload := new(Delete)
-	deletePayload.ProtocolID = protocolID
-	deletePayload.SPISize = SPISize
-	deletePayload.NumberOfSPI = numberOfSPI
-	deletePayload.SPIs = SPIs
-	*container = append(*container, deletePayload)
-}
-
 func (container *TransformContainer) Reset() {
 	*container = nil
 }
@@ -181,8 +166,7 @@ func (container *TransformContainer) BuildTransform(
 	transformID uint16,
 	attributeType *uint16,
 	attributeValue *uint16,
-	variableLengthAttributeValue []byte,
-) {
+	variableLengthAttributeValue []byte) {
 	transform := new(Transform)
 	transform.TransformType = transformType
 	transform.TransformID = transformID
@@ -194,8 +178,8 @@ func (container *TransformContainer) BuildTransform(
 			transform.AttributeValue = *attributeValue
 		} else if len(variableLengthAttributeValue) != 0 {
 			transform.AttributeFormat = AttributeFormatUseTLV
-			transform.VariableLengthAttributeValue = append(transform.VariableLengthAttributeValue,
-				variableLengthAttributeValue...)
+			transform.VariableLengthAttributeValue =
+				append(transform.VariableLengthAttributeValue, variableLengthAttributeValue...)
 		} else {
 			return
 		}
@@ -263,8 +247,7 @@ func (container *IKEPayloadContainer) BuildNotify5G_QOS_INFO(
 	qfiList []uint8,
 	isDefault bool,
 	isDSCPSpecified bool,
-	DSCP uint8,
-) {
+	DSCP uint8) {
 	notifyData := make([]byte, 1) // For length
 	// Append PDU session ID
 	notifyData = append(notifyData, pduSessionID)

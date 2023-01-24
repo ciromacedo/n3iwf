@@ -798,9 +798,7 @@ func (del *Delete) marshal() ([]byte, error) {
 	deleteData[1] = del.SPISize
 	binary.BigEndian.PutUint16(deleteData[2:4], del.NumberOfSPI)
 
-	if int(del.NumberOfSPI) > 0 {
-		deleteData = append(deleteData, del.SPIs...)
-	}
+	deleteData = append(deleteData, del.SPIs...)
 
 	return deleteData, nil
 }
@@ -812,7 +810,7 @@ func (del *Delete) unmarshal(rawData []byte) error {
 	if len(rawData) > 0 {
 		ikeLog.Trace("[Delete] unmarshal(): Unmarshal 1 delete")
 		// bounds checking
-		if len(rawData) <= 3 {
+		if len(rawData) <= 4 {
 			return errors.New("Delete: No sufficient bytes to decode next delete")
 		}
 		spiSize := rawData[1]
@@ -1262,8 +1260,8 @@ func (configuration *Configuration) unmarshal(rawData []byte) error {
 
 			individualConfigurationAttribute.Type = binary.BigEndian.Uint16(configurationAttributeData[0:2])
 			configurationAttributeData = configurationAttributeData[4:]
-			individualConfigurationAttribute.Value = append(individualConfigurationAttribute.Value,
-				configurationAttributeData[:length]...)
+			individualConfigurationAttribute.Value =
+				append(individualConfigurationAttribute.Value, configurationAttributeData[:length]...)
 			configurationAttributeData = configurationAttributeData[length:]
 
 			configuration.ConfigurationAttribute = append(configuration.ConfigurationAttribute, individualConfigurationAttribute)

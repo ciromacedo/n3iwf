@@ -2,7 +2,6 @@ package context
 
 import (
 	"bytes"
-	"fmt"
 
 	"git.cs.nctu.edu.tw/calee/sctp"
 
@@ -60,13 +59,10 @@ func (amf *N3IWFAMF) FindUeByAmfUeNgapID(id int64) *N3IWFUe {
 	return nil
 }
 
-func (amf *N3IWFAMF) RemoveAllRelatedUe() error {
+func (amf *N3IWFAMF) RemoveAllRelatedUe() {
 	for _, ue := range amf.N3iwfUeList {
-		if err := ue.Remove(); err != nil {
-			return fmt.Errorf("RemoveAllRelatedUe error : %+v", err)
-		}
+		ue.Remove()
 	}
-	return nil
 }
 
 func (amf *N3IWFAMF) AddAMFTNLAssociationItem(info ngapType.CPTransportLayerInformation) *AMFTNLAssociationItem {
@@ -88,8 +84,7 @@ func (amf *N3IWFAMF) DeleteAMFTNLAssociationItem(info ngapType.CPTransportLayerI
 
 func (amf *N3IWFAMF) StartOverload(
 	resp *ngapType.OverloadResponse, trafloadInd *ngapType.TrafficLoadReductionIndication,
-	nssai *ngapType.OverloadStartNSSAIList,
-) *AMFOverloadContent {
+	nssai *ngapType.OverloadStartNSSAIList) *AMFOverloadContent {
 	if resp == nil && trafloadInd == nil && nssai == nil {
 		return nil
 	}
